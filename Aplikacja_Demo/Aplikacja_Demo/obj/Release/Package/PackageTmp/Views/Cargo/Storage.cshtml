@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Aplikacja_Demo.Models.Warehouse.Cargo>
+
+<script src="bootstrap-auto-dismiss-alert.js"></script>
+
+<div id="success-alert" class="alert alert-success" role="alert" hidden>
+    Zapisano zamiany
+</div>
+
+<table class="table table-hover" style="    margin-top: 15px;">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(model => model.name)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.quantity)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.price)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.position_x)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.position_y)</th>
+            <th scope="col">Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.id" class="edit_td">
+                <td>@item.name</td>
+                <td>@item.quantity</td>
+                <td>@Html.TextBox("td_" + @item.id, @item.price, new { @class = "form-control", onchange = $@"edittable({item.id})" })</td>
+                <td>@item.position_x</td>
+                <td>@item.position_y</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Warehouse", new { id = item.id }, new { @class = "btn edit" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+
+    function edittable(x) {
+        var update = $("#td_" + x).val() + "|" + x;
+        var new_url = "/Cargo/SaveChange?" + "str=" + update; debugger;
+        $.ajax({
+            type: "POST",
+            url: new_url,
+            data: update,
+            cache: false,
+            success: function () {
+                $("#success-alert").show();
+                setTimeout(alert_hide,2000);               
+            }
+        });
+    }
+
+    function alert_hide() {
+        $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+            $("#success-alert").slideUp(500);            
+        })
+            }
+   
+</script>

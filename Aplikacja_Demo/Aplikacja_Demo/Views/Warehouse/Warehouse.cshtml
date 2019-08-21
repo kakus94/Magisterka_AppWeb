@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Aplikacja_Demo.Models.Warehouse.Supplier>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+<div class="container" style="margin-top: 15px;">
+    <div class="col-md-6">
+        <button class="btn btn-success ">
+            @Html.ActionLink("Stwórz nowe zamówienie", "Create", "Warehouse", new { @class = "btn editCreate" })
+        </button>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-4">
+            <select id="searchSelected" class="form-control" name="cars">
+                <option value="name">Nazwa</option>
+                <option value="rfid">RFID</option>
+                <option value="Who_addition">Producent</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" id="searchName" name="name" type="text" value="">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success" id="searchButton" onclick="Search()" href="/Warehouse/Search">
+                Wyszukaj
+                @*@Html.ActionLink("Wyszukaj", "Search", "Warehouse", new { @class = "btn btnSearch" })*@
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+<table class="table table-hover" style="    margin-top: 15px;">
+    <thead>
+        <tr>
+            <th scope="col">@Html.DisplayNameFor(model => model.name)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.quantity)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.rfid)</th>
+            <th scope="col">@Html.DisplayNameFor(model => model.who)</th>
+            <th scope="col">Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.id">
+                <td>@item.name</td>
+                <td>@item.quantity</td>
+                <td>@item.rfid</td>
+                <td>@item.who</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "Warehouse", new { id = item.id }, new { @class = "btn edit" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<div class="modal fade in " id="myModal" role="dialog"></div>
+<div class="modal fade in " id="myModalCreate" role="dialog"></div>
+
+
+@Html.ActionLink("Wyszukaj", "Search", "Warehouse", new { @class = "btn btnSearch", id = "szukaj_", style = "display: none"})
+
+<script>
+    $('a.edit').on('click', function () {
+        s = this.href;
+        debugger;
+        $.ajax({
+            url: this.href, 
+            type: 'GET',
+            cache: false,
+            success: function (result) {
+                $('#myModal').html(result).find('#modal_test').modal({
+                    show: true
+                });
+                $('#myModal').show();
+            }
+        });
+        return false;
+    });
+
+    $('a.editCreate').on('click', function () {
+        $.ajax({
+            url: this.href,
+            type: 'GET',
+            cache: false,
+            success: function (result) {
+                $('#myModalCreate').html(result).find('#modal_testCreate').modal({
+                    show: true
+                });
+                $('#myModalCreate').show();
+            }
+        });
+        return false;
+    });
+
+    function closeModel() {
+        $('#myModalCreate').css("display", "none");
+        $('#myModal').css("display", "none");
+    };
+
+
+
+
+    function Search() {
+        var searchContent = $('#searchSelected option:selected').val() + "," + $('#searchName').val();
+        var htmlUrl = "/Warehouse/Search?temp=" + searchContent;    
+        $('#szukaj_[href]').prop("href", htmlUrl);  
+
+        document.getElementById('szukaj_').click();
+    };
+
+</script>

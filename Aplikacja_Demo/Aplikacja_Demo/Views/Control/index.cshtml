@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "index";
+}
+
+
+<div class="container">
+    <div class="row" style="">
+        <div class="col-lg-2">
+            <button class="btn-default" onclick="sendorder(2)" >Start</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn-default" onclick="sendorder(1)">Stop</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn-default" onclick="sendorder(4)">Configuracja</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn-default" onclick="sendorder(3)">Status</button>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn-default" onclick="sendorder(5)">Pobierz Dane</button>
+        </div>
+    </div>
+</div>
+
+<div id="success-alert" class="alert alert-success" role="alert" hidden>
+    Zapisano zamiany
+</div>
+
+<script>
+
+    function sendorder(x) {
+        var new_url = "Control/SendOrder?str=" + x; debugger;
+        $.ajax({
+            type: "POST",
+            url: new_url,
+            data: x,
+            cache: false,
+            success: function () {
+                $("#success-alert").show();
+                setTimeout(alert_hide, 2000);
+            }
+        });
+    }
+
+</script>
