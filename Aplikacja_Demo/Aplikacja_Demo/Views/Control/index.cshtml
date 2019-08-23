@@ -1,34 +1,198 @@
-﻿
+﻿@model Aplikacja_Demo.Models.Robot
 @{
     ViewBag.Title = "index";
 }
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
 
 <div class="container">
-    <div class="row" style="">
+    <div class="row" style="margin-top: 25px;">
         <div class="col-lg-2">
-            <button class="btn-default" onclick="sendorder(2)" >Start</button>
+            <button class="btn-success" onclick="sendorder(2)">Start</button>
         </div>
         <div class="col-lg-2">
-            <button class="btn-default" onclick="sendorder(1)">Stop</button>
+            <button class="btn-success" onclick="sendorder(1)">Stop</button>
         </div>
         <div class="col-lg-2">
-            <button class="btn-default" onclick="sendorder(4)">Configuracja</button>
+            <button class="btn-success" onclick="sendorder(4)">Configuracja</button>
         </div>
         <div class="col-lg-2">
-            <button class="btn-default" onclick="sendorder(3)">Status</button>
+            <button class="btn-success" onclick="sendorder(3)">Status</button>
         </div>
         <div class="col-lg-2">
-            <button class="btn-default" onclick="sendorder(5)">Pobierz Dane</button>
+            <button class="btn-success" onclick="sendorder(5)">Pobierz Dane</button>
         </div>
     </div>
 </div>
 
-<div id="success-alert" class="alert alert-success" role="alert" hidden>
-    Zapisano zamiany
+
+<div class="container">
+    <div class="row" style="margin-top: 25px;">
+        <div class="col-lg-6" id="divReplace">
+            <h2>Status</h2>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label col-form-label-lg">Startowy poziom baterii</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control col-lg-6" id="ID_BateryStart" step="0.01" value="@Model.statusRobot.BateryStart" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label col-form-label-lg">Obecny poziom baterii</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control col-lg-6" id="ID_battery" step="0.01" value="@Model.statusRobot.battery" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label col-form-label-lg">Lokalizacja Robota</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control col-lg-6" id="ID_localization" value="@Model.statusRobot.localization" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label col-form-label-lg">Temperatura procesora</label>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control col-lg-6" id="ID_temperature" step=".01" value="@Model.statusRobot.temperature" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label col-form-label-lg">Zaplanowany start</label>
+                <div class="col-sm-10">
+                    <input type="datetime" class="form-control col-lg-6" id="ID_timeToStart" value="@Model.statusRobot.timeToStart" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h2>Configuracja</h2>
+
+            <form id="form1">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label col-form-label-lg"  for="alarm_voltage">Alarm baterii</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="alarm_voltage" class="form-control col-lg-6" id="ID_alarm_voltage" step="0.1" placeholder="11.0" value="@Model.configRobot.alarm_voltage">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label col-form-label-lg" for="finish_charge">Napięcie docelowe</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="finish_charge" class="form-control col-lg-6" id="ID_finish_charge" step="0.1" placeholder="11.0" value="@Model.configRobot.finish_charge">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pid_kd" class="col-sm-2 col-form-label col-form-label-sm" >PID_kd</label>
+                    <div class="col-sm-10">
+                        <input type="number" name="pid_kd"  step="0.01" class="form-control form-control-sm" id="ID_pid_kd" value="@Model.configRobot.pid_kd" placeholder="-0.01">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pid_ki" class="col-sm-2 col-form-label col-form-label-sm">PID_ki</label>
+                    <div class="col-sm-10">
+                        <input type="number"  name="pid_ki" step="0.01" class="form-control form-control-sm" id="ID_pid_ki" value="@Model.configRobot.pid_ki" placeholder="0.3" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="pid_kp" class="col-sm-2 col-form-label col-form-label-sm">PID_kp</label>
+                    <div class="col-sm-10">
+                        <input type="number"  name="pid_kp" step="0.1" class="form-control form-control-sm" id="ID_pid_kp" value="@Model.configRobot.pid_kp" placeholder="5">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="robot_name" class="col-sm-2 col-form-label col-form-label-sm">Nazwa Robota</label>
+                    <div class="col-sm-10">
+                        <input type="text"  name="robot_name" class="form-control form-control-sm" id="ID_robot_name" value="@Model.configRobot.robot_name" placeholder="Azor">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="speed_home" class="col-sm-2 col-form-label col-form-label-sm">Predkość w bazie</label>
+                    <div class="col-sm-10">
+                        <input type="number"  name="speed_home" class="form-control form-control-sm" id="ID_speed_home" value="@Model.configRobot.speed_home" placeholder="3">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="speed_operation" class="col-sm-2 col-form-label col-form-label-sm">Prędkość robocza</label>
+                    <div class="col-sm-10">
+                        <input type="number"  name="speed_operation" class="form-control form-control-sm" id="ID_speed_operation" value="@Model.configRobot.speed_operation" placeholder="2">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
 </div>
 
+
 <script>
+
+    $(document).ready(function () {
+        // Fetch the initial table
+        refreshTable();
+
+        // Fetch every 5 seconds
+        setInterval(refreshTable, 5000);
+    });
+
+    function refreshTable() {
+        $.getJSON('/Control/GetStatus', function (data) {
+            debugger;
+            var vehicleListData = '';
+            debugger;
+                vehicleListData += "<h2>Status</h2>";
+                vehicleListData += " <div class=\"form-group row\">";
+                vehicleListData += " <label class=\"col-sm-2 col-form-label col-form-label-lg\">Startowy poziom baterii</label>";
+            vehicleListData += "  <div class=\"col-sm-10\">";
+            vehicleListData += "    <input type=\"text\" class=\"form-control col-lg-6\" id=\"ID_BateryStart\"  value=\"" + data["BateryStart"] +"\" disabled>";
+                vehicleListData += "  </div>";
+                vehicleListData += "  </div>";
+                vehicleListData += "<div class=\"form-group row\">";
+                vehicleListData += "   <label class=\"col-sm-2 col-form-label col-form-label-lg\">Obecny poziom baterii</label>";
+                vehicleListData += "  <div class=\"col-sm-10\">";
+            vehicleListData += "      <input type=\"text\" class=\"form-control col-lg-6\" id=\"ID_battery\"  value=\"" + data["battery"] +"\" disabled>";
+                vehicleListData += "  </div>";
+                vehicleListData += "   </div>";
+                vehicleListData += "   <div class=\"form-group row\">";
+                vehicleListData += "     <label class=\"col-sm-2 col-form-label col-form-label-lg\">Lokalizacja Robota</label>";
+                vehicleListData += "     <div class=\"col-sm-10\">";
+            vehicleListData += "        <input type=\"text\" class=\"form-control col-lg-6\" id=\"ID_localization\" value=\"" + data["localization"] +"\" disabled>";
+                vehicleListData += "   </div>";
+                vehicleListData += "  </div>";
+                vehicleListData += "<div class=\"form-group row\">";
+                vehicleListData += "    <label class=\"col-sm-2 col-form-label col-form-label-lg\">Temperatura procesora</label>";
+                vehicleListData += "    <div class=\"col-sm-10\">";
+            vehicleListData += "        <input type=\"text\" class=\"form-control col-lg-6\" id=\"ID_temperature\"  value=\"" + data["temperature"] +"\" disabled>";
+                vehicleListData += "    </div>";
+                vehicleListData += "  </div>";
+                vehicleListData += "  <div class=\"form-group row\">";
+                vehicleListData += "     <label class=\"col-sm-2 col-form-label col-form-label-lg\">Zaplanowany start</label>";
+                vehicleListData += "     <div class=\"col-sm-10\">";
+            vehicleListData += "          <input type=\"text\" class=\"form-control col-lg-6\" id=\"ID_timeToStart\" value=\"" + data["timeToStart"] +"\" disabled>";
+                vehicleListData += "      </div>";
+                vehicleListData += "   </div>";
+                vehicleListData += "   </div>";
+            // We use .html instead of .append here, to make sure we don't add the same
+            // entries when the interval is ran for the n-th time.
+            debugger;
+            jQuery('#divReplace div').html('')
+            $('#divReplace').html(vehicleListData);
+        });
+    }
+
+
+
+    $("#form1").submit(function () {
+        debugger;
+        var jqxhr = $.get('Control/SendConfig', $('#form1').serialize())
+            .success(function () {
+            })
+            .error(function () {
+                $('#message').html("Error posting the update.");
+            });
+        return false;
+    });
+
+
 
     function sendorder(x) {
         var new_url = "Control/SendOrder?str=" + x; debugger;
