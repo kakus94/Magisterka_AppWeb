@@ -11,19 +11,16 @@
 
 <div class="container">
     <div class="row" style="margin-top: 25px;">
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <button class="btn-success" onclick="sendorder(2)">Start</button>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <button class="btn-success" onclick="sendorder(1)">Stop</button>
-        </div>
-        <div class="col-lg-2">
-            <button class="btn-success" onclick="sendorder(4)">Configuracja</button>
-        </div>
-        <div class="col-lg-2">
+        </div>     
+        <div class="col-lg-3">
             <button class="btn-success" onclick="sendorder(3)">Status</button>
         </div>
-        <div class="col-lg-2">
+        <div class="col-lg-3">
             <button class="btn-success" onclick="sendorder(5)">Pobierz Dane</button>
         </div>
     </div>
@@ -117,7 +114,7 @@
                         <input type="number"  name="speed_operation" class="form-control form-control-sm" id="ID_speed_operation" value="@Model.configRobot.speed_operation" placeholder="2">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Zapisz ustawienia</button>
             </form>
         </div>
     </div>
@@ -135,10 +132,9 @@
     });
 
     function refreshTable() {
-        $.getJSON('/Control/GetStatus', function (data) {
-            debugger;
+        //$.getJSON('/Control/GetStatus', function (data) {
+            $.getJSON('@Url.Action("GetStatus","Control")', function (data) {
             var vehicleListData = '';
-            debugger;
                 vehicleListData += "<h2>Status</h2>";
                 vehicleListData += " <div class=\"form-group row\">";
                 vehicleListData += " <label class=\"col-sm-2 col-form-label col-form-label-lg\">Startowy poziom baterii</label>";
@@ -173,7 +169,7 @@
                 vehicleListData += "   </div>";
             // We use .html instead of .append here, to make sure we don't add the same
             // entries when the interval is ran for the n-th time.
-            debugger;
+            
             jQuery('#divReplace div').html('')
             $('#divReplace').html(vehicleListData);
         });
@@ -183,14 +179,20 @@
 
     $("#form1").submit(function () {
         debugger;
-        var jqxhr = $.get('Control/SendConfig', $('#form1').serialize())
-            .success(function () {
-            })
-            .error(function () {
-                $('#message').html("Error posting the update.");
-            });
-        return false;
+        var x = $('#form1').serialize();
+        var new_url = "Control/SendConfig"; debugger;
+        $.ajax({
+            type: "GET",
+            url: new_url,
+            data: x,
+            dataType:'JSON',
+            cache: false,
+            success: function () {
+            }
+        });
     });
+    
+
 
 
 

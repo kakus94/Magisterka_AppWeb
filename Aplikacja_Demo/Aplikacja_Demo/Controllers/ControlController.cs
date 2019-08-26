@@ -72,7 +72,7 @@ VALUES ('{fc.speed_operation}', '{fc.speed_home}', '{fc.pid_kp}', '{fc.pid_ki}',
 
             connection.Open();
             MySqlCommand cmd = new MySqlCommand(cmdString, connection);
-            cmd.ExecuteNonQuery();     
+            cmd.ExecuteNonQuery();
 
             cmd = new MySqlCommand("SELECT battery,battery_start,localization,temperature,time_to_Start,date FROM magazyn.status where id = (select max(id)from magazyn.status) ;  ", connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
@@ -91,7 +91,7 @@ VALUES ('{fc.speed_operation}', '{fc.speed_home}', '{fc.pid_kp}', '{fc.pid_ki}',
         }
 
         [HttpGet]
-        public string GetStatus(string str)
+        public string GetStatus()
         {
 
             MySqlCommand cmd = new MySqlCommand("SELECT battery,battery_start,localization,temperature,time_to_Start,date FROM magazyn.status where id = (select max(id)from magazyn.status) ;  ", connection);
